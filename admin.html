@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>desni — Studio Admin Dashboard</title>
+  
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ==========================================================================
+       RESET & LIQUID DESIGN TOKENS
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-dark: #070709;
+      --bg-card: rgba(18, 18, 22, 0.72);
+      --bg-card-hover: rgba(26, 26, 32, 0.85);
+      
+      --border-glass: rgba(255, 255, 255, 0.12);
+      --border-glow: rgba(230, 57, 70, 0.45);
+      
+      --accent-red: #e63946;
+      --accent-crimson: #ff2a4b;
+      --accent-glow: rgba(230, 57, 70, 0.28);
+      
+      --badge-new: #ef4444;
+      --badge-replied: #10b981;
+      --badge-archived: #71717a;
+      
+      --text-main: #ffffff;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      
+      --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Ambient Floating Background Orbs */
+    .ambient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.30;
+      animation: floatOrb 18s infinite ease-in-out alternate;
+    }
+
+    .orb-1 {
+      top: -10%;
+      right: -10%;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, #e63946 0%, #ff2a4b 60%, transparent 100%);
+    }
+
+    .orb-2 {
+      bottom: -15%;
+      left: -10%;
+      width: 650px;
+      height: 650px;
+      background: radial-gradient(circle, #ff2a4b 0%, #8b5cf6 60%, transparent 100%);
+      animation-delay: -6s;
+    }
+
+    .orb-3 {
+      top: 35%;
+      left: 30%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(230, 57, 70, 0.45) 0%, transparent 70%);
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.28; }
+      50% { transform: translate(40px, -60px) scale(1.1); opacity: 0.35; }
+      100% { transform: translate(-30px, 40px) scale(0.95); opacity: 0.28; }
+    }
+
+    /* Liquid Glassmorphism Utility */
+    .liquid-glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.14);
+      transition: var(--transition-smooth);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      border: none;
+      outline: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-red), var(--accent-crimson));
+      color: #ffffff;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(255, 42, 75, 0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--border-glass);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #ffffff;
+      border-color: #ef4444;
+    }
+
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 0.8rem;
+    }
+
+    /* ==========================================================================
+       TOP ADMIN NAVBAR
+       ========================================================================== */
+    .admin-navbar {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-glass);
+      background: rgba(7, 7, 9, 0.9);
+      backdrop-filter: blur(20px);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-brand img {
+      height: 34px;
+      width: auto;
+    }
+
+    .nav-brand-title {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #10b981;
+      font-weight: 600;
+      padding: 6px 14px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: var(--radius-full);
+    }
+
+    .status-dot-pulse {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #10b981;
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-full);
+    }
+
+    .user-avatar-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-red), var(--accent-crimson));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .user-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       DASHBOARD LAYOUT (SIDEBAR + MAIN CONTENT)
+       ========================================================================== */
+    .dashboard-layout {
+      display: flex;
+      flex: 1;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: 240px;
+      background: rgba(12, 12, 16, 0.7);
+      backdrop-filter: blur(24px);
+      border-right: 1px solid var(--border-glass);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: calc(100vh - 67px);
+      position: sticky;
+      top: 67px;
+    }
+
+    .sidebar-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sidebar-heading {
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-dim);
+      padding: 8px 12px;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      transition: var(--transition-smooth);
+    }
+
+    .sidebar-item:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-item.active {
+      color: #ffffff;
+      background: linear-gradient(90deg, rgba(230, 57, 70, 0.25), rgba(230, 57, 70, 0.05));
+      border-color: rgba(230, 57, 70, 0.4);
+      box-shadow: inset 2px 0 0 var(--accent-red);
+    }
+
+    .sidebar-item-icon {
+      font-size: 1.1rem;
+      width: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar-badge {
+      margin-left: auto;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 800;
+      background: rgba(230, 57, 70, 0.2);
+      color: var(--accent-red);
+      border: 1px solid rgba(230, 57, 70, 0.3);
+    }
+
+    .sidebar-footer {
+      border-top: 1px solid var(--border-glass);
+      padding-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .section-heading-title {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 800;
+    }
+
+    .section-heading-sub {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* ==========================================================================
+       TAB 1: OVERVIEW TAB
+       ========================================================================== */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .kpi-card {
+      padding: 24px;
+    }
+
+    .kpi-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kpi-value {
+      font-family: var(--font-heading);
+      font-size: 2.3rem;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .kpi-subtext {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+
+    /* Activity Feed */
+    .activity-card {
+      padding: 28px;
+    }
+
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      transition: var(--transition-smooth);
+    }
+
+    .activity-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .activity-info h5 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .activity-info p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       TAB 2: ALL MESSAGES TAB
+       ========================================================================== */
+    .filter-bar {
+      padding: 18px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 16px 10px 38px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-full);
+      color: var(--text-main);
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+    }
+
+    .filter-select {
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-full);
+      color: var(--text-main);
+      font-size: 0.88rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .filter-select option {
+      background: #141419;
+      color: #ffffff;
+    }
+
+    /* Data Table */
+    .table-container {
+      padding: 24px;
+      overflow-x: auto;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    .data-table th {
+      padding: 14px 16px;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--border-glass);
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      vertical-align: middle;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .status-badge.new {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    .status-badge.replied {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .status-badge.archived {
+      background: rgba(113, 113, 122, 0.15);
+      color: #a1a1aa;
+      border: 1px solid rgba(113, 113, 122, 0.35);
+    }
+
+    .service-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(230, 57, 70, 0.1);
+      color: var(--accent-red);
+      border: 1px solid rgba(230, 57, 70, 0.25);
+      white-space: nowrap;
+    }
+
+    .message-cell-preview {
+      max-width: 220px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .message-cell-preview:hover {
+      color: #ffffff;
+    }
+
+    /* ==========================================================================
+       TAB 3: CLIENTS DIRECTORY
+       ========================================================================== */
+    .client-list-card {
+      padding: 24px;
+      overflow-x: auto;
+    }
+
+    /* ==========================================================================
+       TAB 4: PRICING STATS & CHARTS
+       ========================================================================== */
+    .stats-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .chart-card {
+      padding: 30px;
+    }
+
+    .chart-card h4 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .bar-stat-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .bar-stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .bar-stat-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .bar-stat-track {
+      height: 8px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .bar-stat-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-red), var(--accent-crimson));
+      border-radius: var(--radius-full);
+      transition: width 1s ease;
+    }
+
+    /* ==========================================================================
+       TAB 5: SETTINGS TAB
+       ========================================================================== */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .settings-box {
+      padding: 30px;
+    }
+
+    .settings-box h4 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 560px;
+      padding: 36px;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-layout, .settings-grid { grid-template-columns: 1fr; }
+      .sidebar { width: 70px; padding: 16px 8px; }
+      .sidebar-item span:not(.sidebar-item-icon) { display: none; }
+      .sidebar-heading { display: none; }
+      .sidebar-badge { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .admin-navbar { padding: 12px 18px; }
+      .kpi-grid { grid-template-columns: 1fr; }
+      .main-content { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Glowing Mesh Background -->
+  <div class="ambient-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Top Admin Navbar -->
+  <header class="admin-navbar">
+    <div class="nav-brand">
+      <a href="index.html" title="Back to public site">
+        <img src="assets/desni-logo.png" alt="desni" onerror="this.style.display='none';">
+      </a>
+      <span class="nav-brand-title">desni Admin Dashboard</span>
+    </div>
+
+    <div class="nav-user">
+      <div class="status-pill">
+        <div class="status-dot-pulse"></div>
+        <span>System Online</span>
+      </div>
+
+      <div class="user-profile-badge">
+        <div class="user-avatar-circle">N</div>
+        <span class="user-name">Niyamath</span>
+      </div>
+
+      <button id="logoutBtn" class="btn btn-danger btn-sm" title="Log out">
+        Logout ⏻
+      </button>
+    </div>
+  </header>
+
+  <!-- Dashboard Layout -->
+  <div class="dashboard-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-menu">
+        <div class="sidebar-heading">Management</div>
+        
+        <button class="sidebar-item active" data-tab="tabOverview">
+          <span class="sidebar-item-icon">📊</span>
+          <span>Overview</span>
+        </button>
+
+        <button class="sidebar-item" data-tab="tabMessages">
+          <span class="sidebar-item-icon">✉️</span>
+          <span>All Messages</span>
+          <span class="sidebar-badge" id="sidebarMsgCount">0</span>
+        </button>
+
+        <button class="sidebar-item" data-tab="tabClients">
+          <span class="sidebar-item-icon">👥</span>
+          <span>Clients</span>
+        </button>
+
+        <button class="sidebar-item" data-tab="tabPricing">
+          <span class="sidebar-item-icon">📈</span>
+          <span>Pricing Stats</span>
+        </button>
+
+        <button class="sidebar-item" data-tab="tabSettings">
+          <span class="sidebar-item-icon">⚙️</span>
+          <span>Settings</span>
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="index.html" class="sidebar-item" target="_blank" style="text-decoration: none;">
+          <span class="sidebar-item-icon">🌐</span>
+          <span>Public Website ↗</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+      <!-- ======================================================================
+         TAB 1: OVERVIEW (DEFAULT)
+         ====================================================================== -->
+      <section id="tabOverview" class="tab-content active">
+        <div class="section-header-row">
+          <div>
+            <h1 class="section-heading-title">Dashboard Overview</h1>
+            <p class="section-heading-sub">Studio inquiry metrics, lead activity, and project pipeline.</p>
+          </div>
+          <div>
+            <button id="quickSampleBtn" class="btn btn-secondary btn-sm">+ Add Sample Lead</button>
+          </div>
+        </div>
+
+        <!-- KPI Stats Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card liquid-glass">
+            <div class="kpi-title"><span>Total Inquiries</span><span>📥</span></div>
+            <div class="kpi-value" id="kpiTotal">0</div>
+            <div class="kpi-subtext">Lifetime submissions from site</div>
+          </div>
+
+          <div class="kpi-card liquid-glass">
+            <div class="kpi-title"><span>New Messages</span><span>⚡</span></div>
+            <div class="kpi-value" id="kpiNew" style="color: #f87171;">0</div>
+            <div class="kpi-subtext">Awaiting your response</div>
+          </div>
+
+          <div class="kpi-card liquid-glass">
+            <div class="kpi-title"><span>Pending Replies</span><span>⏳</span></div>
+            <div class="kpi-value" id="kpiPending" style="color: #fbbf24;">0</div>
+            <div class="kpi-subtext">In progress with client</div>
+          </div>
+
+          <div class="kpi-card liquid-glass">
+            <div class="kpi-title"><span>Active Clients</span><span>👥</span></div>
+            <div class="kpi-value" id="kpiClients" style="color: #60a5fa;">0</div>
+            <div class="kpi-subtext">Registered client accounts</div>
+          </div>
+
+          <div class="kpi-card liquid-glass">
+            <div class="kpi-title"><span>Pipeline Revenue</span><span>₹</span></div>
+            <div class="kpi-value" id="kpiRevenue" style="color: #34d399;">₹0</div>
+            <div class="kpi-subtext">Estimated value of active leads</div>
+          </div>
+
+          <div class="kpi-card liquid-glass">
+            <div class="kpi-title"><span>Conversion Rate</span><span>🎯</span></div>
+            <div class="kpi-value" id="kpiConversion" style="color: #c084fc;">0%</div>
+            <div class="kpi-subtext">Resolved / closed inquiries</div>
+          </div>
+        </div>
+
+        <!-- Recent Activity Feed -->
+        <div class="activity-card liquid-glass">
+          <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 4px;">Recent Inquiry Activity</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">Latest submissions received from potential clients.</p>
+          <div class="activity-list" id="activityList">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+         TAB 2: ALL MESSAGES TAB
+         ====================================================================== -->
+      <section id="tabMessages" class="tab-content">
+        <div class="section-header-row">
+          <div>
+            <h1 class="section-heading-title">Client Messages & Inquiries</h1>
+            <p class="section-heading-sub">Search, reply, filter, and archive submissions from the contact form.</p>
+          </div>
+          <div>
+            <button id="exportCsvBtn1" class="btn btn-secondary btn-sm">Export CSV ↓</button>
+          </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-bar liquid-glass">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="msgSearchInput" class="search-input" placeholder="Search by name, email, phone, or keyword...">
+          </div>
+
+          <select id="msgStatusFilter" class="filter-select">
+            <option value="all">All Statuses</option>
+            <option value="new">New</option>
+            <option value="replied">Replied</option>
+            <option value="archived">Archived</option>
+          </select>
+
+          <select id="msgServiceFilter" class="filter-select">
+            <option value="all">All Services</option>
+            <option value="Brand Identity Design">Brand Identity</option>
+            <option value="UI/UX Design">UI/UX Design</option>
+            <option value="Motion Graphics Design">Motion Graphics</option>
+            <option value="Packaging Design">Packaging</option>
+            <option value="Publication/Print Design">Print & Publication</option>
+            <option value="Digital Illustration Design">Illustration</option>
+            <option value="Product Design">Product Design</option>
+            <option value="Brand Strategy">Brand Strategy</option>
+            <option value="Brand Redesign">Brand Redesign</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-container liquid-glass">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Client Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Service</th>
+                <th>Message</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="messagesTableBody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+          <div id="noMessagesState" style="display: none; padding: 40px; text-align: center; color: var(--text-muted);">
+            No messages found matching your search criteria.
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+         TAB 3: CLIENTS DIRECTORY
+         ====================================================================== -->
+      <section id="tabClients" class="tab-content">
+        <div class="section-header-row">
+          <div>
+            <h1 class="section-heading-title">Clients Directory</h1>
+            <p class="section-heading-sub">Directory of clients who have logged in or submitted inquiries.</p>
+          </div>
+        </div>
+
+        <div class="client-list-card liquid-glass">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Client Email</th>
+                <th>Login Count</th>
+                <th>Last Login / Activity</th>
+                <th>Messages Sent</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="clientsTableBody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+          <div id="noClientsState" style="display: none; padding: 40px; text-align: center; color: var(--text-muted);">
+            No clients registered yet.
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+         TAB 4: PRICING STATS & CHARTS
+         ====================================================================== -->
+      <section id="tabPricing" class="tab-content">
+        <div class="section-header-row">
+          <div>
+            <h1 class="section-heading-title">Pricing & Service Analytics</h1>
+            <p class="section-heading-sub">Distribution of inquiries across packages and services.</p>
+          </div>
+        </div>
+
+        <div class="stats-layout">
+          <div class="chart-card liquid-glass">
+            <h4>Inquiries by Service Breakdown</h4>
+            <div class="bar-stat-group" id="serviceBarsContainer">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+
+          <div class="chart-card liquid-glass">
+            <h4>Package Revenue Distribution</h4>
+            <div class="bar-stat-group">
+              <div class="bar-stat-item">
+                <div class="bar-stat-label"><span>Logo Design (₹5,000)</span><span id="pctLogo">0%</span></div>
+                <div class="bar-stat-track"><div class="bar-stat-fill" id="fillLogo" style="width: 0%;"></div></div>
+              </div>
+              <div class="bar-stat-item">
+                <div class="bar-stat-label"><span>Brand Identity (₹15,000 - Popular)</span><span id="pctIdentity">0%</span></div>
+                <div class="bar-stat-track"><div class="bar-stat-fill" id="fillIdentity" style="width: 0%;"></div></div>
+              </div>
+              <div class="bar-stat-item">
+                <div class="bar-stat-label"><span>Packaging & Print (₹10,000)</span><span id="pctPackaging">0%</span></div>
+                <div class="bar-stat-track"><div class="bar-stat-fill" id="fillPackaging" style="width: 0%;"></div></div>
+              </div>
+            </div>
+
+            <div style="margin-top: 30px; padding: 18px; background: rgba(255,255,255,0.03); border-radius: var(--radius-md); border: 1px solid var(--border-glass);">
+              <h5 style="font-size: 0.95rem; margin-bottom: 6px;">💡 Strategic Insight</h5>
+              <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+                The <strong>Brand Identity Design</strong> package accounts for the highest project inquiries. Ensure guidelines and 3D mockups are highlighted in your pitch decks.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+         TAB 5: SETTINGS TAB
+         ====================================================================== -->
+      <section id="tabSettings" class="tab-content">
+        <div class="section-header-row">
+          <div>
+            <h1 class="section-heading-title">Admin Settings</h1>
+            <p class="section-heading-sub">Security preferences, backup options, and system controls.</p>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          <!-- Password Change -->
+          <div class="settings-box liquid-glass">
+            <h4>Change Admin Password</h4>
+            <form id="changePasswordForm">
+              <div class="form-group">
+                <label class="form-label">Current Password</label>
+                <input type="password" id="currentPassInput" class="form-input" required placeholder="Enter current password">
+              </div>
+              <div class="form-group">
+                <label class="form-label">New Password</label>
+                <input type="password" id="newPassInput" class="form-input" required placeholder="Enter new password">
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm">Update Password</button>
+              <div id="passAlert" style="display: none; margin-top: 12px; font-size: 0.85rem;"></div>
+            </form>
+          </div>
+
+          <!-- Data Backups & Reset -->
+          <div class="settings-box liquid-glass">
+            <h4>Data Backup & Export</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 18px; line-height: 1.6;">
+              Export all stored inquiries and client messages for offline record keeping or cloud backup.
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;">
+              <button id="exportCsvBtn2" class="btn btn-secondary btn-sm">Download CSV ↓</button>
+              <button id="backupJsonBtn" class="btn btn-secondary btn-sm">Backup JSON ↓</button>
+              <button id="resetDemoBtn" class="btn btn-danger btn-sm">Reset Sample Data</button>
+            </div>
+
+            <h4 style="margin-top: 24px;">Admin Profile</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted);">
+              <strong>Admin:</strong> Niyamathullah<br>
+              <strong>Email:</strong> deswithniyamath01@gmail.com<br>
+              <strong>Instagram:</strong> @desni__<br>
+              <strong>Behance:</strong> Portfolio-Graphic-Design
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Message View & Reply Modal -->
+  <div id="messageModal" class="modal-backdrop">
+    <div class="modal-box liquid-glass">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalClientName">Client Message</h3>
+        <button id="modalCloseBtn" class="modal-close">×</button>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <span id="modalServiceTag" class="service-tag">Brand Identity</span>
+        <span id="modalStatusTag" class="status-badge new" style="margin-left: 8px;">New</span>
+        <span id="modalDate" style="font-size: 0.8rem; color: var(--text-dim); margin-left: 10px;"></span>
+      </div>
+
+      <div style="background: rgba(0,0,0,0.3); padding: 18px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); margin-bottom: 20px;">
+        <p id="modalMessageBody" style="font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap;"></p>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">Internal Admin Notes</label>
+        <textarea id="modalAdminNotes" class="form-input" rows="2" placeholder="Add private notes regarding this lead..."></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; gap: 8px;">
+          <button id="modalMarkRepliedBtn" class="btn btn-secondary btn-sm" style="color: #34d399;">✓ Mark Replied</button>
+          <button id="modalArchiveBtn" class="btn btn-secondary btn-sm">Archive</button>
+        </div>
+        <a id="modalMailtoBtn" href="#" class="btn btn-primary btn-sm">Send Email Reply ✉</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+     ADMIN SCRIPT: AUTH GATING, AUTO-LOGOUT (30M), TABS, CRUD, METRICS
+     ========================================================================== -->
+  <script>
+    // System Keys
+    const ADMIN_SESSION_KEY = 'adminSession';
+    const USER_SESSION_KEY = 'userSession';
+    const MESSAGES_KEY = 'messages';
+    const CLIENTS_KEY = 'clients';
+    const CUSTOM_PASS_KEY = 'admin_custom_password';
+
+    const HARDCODED_USER = 'Niyamath';
+    const HARDCODED_PASS = '001430';
+
+    // 1. Check Authentication & Session Expiry (30 mins inactivity)
+    function checkAdminAuth() {
+      const sessionStr = localStorage.getItem(ADMIN_SESSION_KEY) || localStorage.getItem(USER_SESSION_KEY);
+      if (!sessionStr) {
+        redirectToLogin();
+        return false;
+      }
+
+      try {
+        const session = JSON.parse(sessionStr);
+        if (session.userType !== 'admin') {
+          redirectToLogin();
+          return false;
+        }
+
+        // Auto-logout after 30 minutes of inactivity
+        const now = Date.now();
+        const maxAge = 30 * 60 * 1000; // 30 minutes
+        if (session.lastActive && (now - session.lastActive > maxAge)) {
+          alert('Session expired due to 30 minutes of inactivity. Please login again.');
+          logout();
+          return false;
+        }
+
+        // Refresh activity timestamp
+        session.lastActive = now;
+        localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(session));
+        return true;
+      } catch (e) {
+        redirectToLogin();
+        return false;
+      }
+    }
+
+    function redirectToLogin() {
+      window.location.href = 'index.html?login=admin';
+    }
+
+    function logout() {
+      localStorage.removeItem(ADMIN_SESSION_KEY);
+      localStorage.removeItem(USER_SESSION_KEY);
+      window.location.href = 'index.html';
+    }
+
+    // Inactivity tracking
+    ['click', 'mousemove', 'keypress'].forEach(evt => {
+      window.addEventListener(evt, () => {
+        const sessionStr = localStorage.getItem(ADMIN_SESSION_KEY);
+        if (sessionStr) {
+          try {
+            const s = JSON.parse(sessionStr);
+            s.lastActive = Date.now();
+            localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(s));
+          } catch(e){}
+        }
+      }, { passive: true });
+    });
+
+    // Seed initial demo data if empty
+    function seedInitialData() {
+      if (!localStorage.getItem(MESSAGES_KEY)) {
+        const initialMessages = [
+          {
+            id: 'msg_001',
+            date: new Date(Date.now() - 3600000 * 4).toISOString(),
+            name: 'Aakash Varma',
+            email: 'aakash@nexusbrand.io',
+            phone: '+91 98450 11223',
+            service: 'Brand Identity Design',
+            message: 'We are a fintech startup preparing for our Q1 launch. Need a comprehensive visual identity, typography framework, and brand guidelines.',
+            status: 'new',
+            adminNotes: 'Reviewed portfolio match. Great potential lead.',
+            replied: false,
+            repliedDate: null
+          },
+          {
+            id: 'msg_002',
+            date: new Date(Date.now() - 3600000 * 24).toISOString(),
+            name: 'Ritika Sen',
+            email: 'ritika@zenithbrew.com',
+            phone: '+91 91234 56789',
+            service: 'Packaging Design',
+            message: 'Launching a premium craft beverage line. Need 4 flavor label die-lines, secondary packaging, and 3D renders.',
+            status: 'replied',
+            adminNotes: 'Sent quote and Behance case study on Everchill.',
+            replied: true,
+            repliedDate: new Date(Date.now() - 3600000 * 12).toISOString()
+          },
+          {
+            id: 'msg_003',
+            date: new Date(Date.now() - 3600000 * 72).toISOString(),
+            name: 'Siddharth Rao',
+            email: 'sid@novasystems.tech',
+            phone: '+91 99887 76655',
+            service: 'UI/UX Design',
+            message: 'Redesigning our cloud analytics web portal and developer documentation interface.',
+            status: 'new',
+            adminNotes: '',
+            replied: false,
+            repliedDate: null
+          }
+        ];
+        localStorage.setItem(MESSAGES_KEY, JSON.stringify(initialMessages));
+      }
+
+      if (!localStorage.getItem(CLIENTS_KEY)) {
+        const initialClients = [
+          { email: 'aakash@nexusbrand.io', loginCount: 3, lastLogin: new Date().toISOString(), joinDate: new Date().toISOString(), status: 'active' },
+          { email: 'ritika@zenithbrew.com', loginCount: 2, lastLogin: new Date(Date.now() - 86400000).toISOString(), joinDate: new Date(Date.now() - 86400000).toISOString(), status: 'active' },
+          { email: 'client@example.com', loginCount: 1, lastLogin: new Date(Date.now() - 172800000).toISOString(), joinDate: new Date(Date.now() - 172800000).toISOString(), status: 'active' }
+        ];
+        localStorage.setItem(CLIENTS_KEY, JSON.stringify(initialClients));
+      }
+    }
+
+    // Run auth check immediately
+    if (checkAdminAuth()) {
+      seedInitialData();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      if (!checkAdminAuth()) return;
+
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) logoutBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to log out?')) logout();
+      });
+
+      // Tab Switching
+      const sidebarItems = document.querySelectorAll('.sidebar-item[data-tab]');
+      sidebarItems.forEach(item => {
+        item.addEventListener('click', function () {
+          const targetTabId = this.getAttribute('data-tab');
+          sidebarItems.forEach(el => el.classList.remove('active'));
+          this.classList.add('active');
+
+          document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+          const targetTab = document.getElementById(targetTabId);
+          if (targetTab) targetTab.classList.add('active');
+
+          // Trigger tab-specific renders
+          if (targetTabId === 'tabMessages') renderMessagesTable();
+          if (targetTabId === 'tabClients') renderClientsTable();
+          if (targetTabId === 'tabPricing') renderPricingStats();
+          if (targetTabId === 'tabOverview') renderOverview();
+        });
+      });
+
+      // Data helpers
+      function getMessages() {
+        try {
+          return JSON.parse(localStorage.getItem(MESSAGES_KEY) || '[]');
+        } catch(e) { return []; }
+      }
+
+      function saveMessages(msgs) {
+        localStorage.setItem(MESSAGES_KEY, JSON.stringify(msgs));
+        renderOverview();
+      }
+
+      function getClients() {
+        try {
+          return JSON.parse(localStorage.getItem(CLIENTS_KEY) || '[]');
+        } catch(e) { return []; }
+      }
+
+      // ======================================================================
+      // 1. RENDER OVERVIEW
+      // ======================================================================
+      function renderOverview() {
+        const msgs = getMessages();
+        const clients = getClients();
+
+        const totalCount = msgs.length;
+        const newCount = msgs.filter(m => m.status === 'new').length;
+        const repliedCount = msgs.filter(m => m.status === 'replied').length;
+        const clientCount = clients.length;
+
+        // Pricing values
+        const SERVICE_VALS = {
+          'Brand Identity Design': 15000,
+          'UI/UX Design': 12000,
+          'Motion Graphics Design': 12000,
+          'Packaging Design': 10000,
+          'Publication/Print Design': 10000,
+          'Digital Illustration Design': 8000,
+          'Product Design': 15000,
+          'Brand Strategy': 15000,
+          'Brand Redesign': 12000,
+          'Others': 5000
+        };
+
+        let revenue = 0;
+        msgs.forEach(m => {
+          if (m.status !== 'archived') {
+            revenue += (SERVICE_VALS[m.service] || 10000);
+          }
+        });
+
+        const convRate = totalCount > 0 ? Math.round((repliedCount / totalCount) * 100) : 0;
+
+        document.getElementById('kpiTotal').textContent = totalCount;
+        document.getElementById('kpiNew').textContent = newCount;
+        document.getElementById('kpiPending').textContent = msgs.filter(m => m.status === 'new' && !m.replied).length;
+        document.getElementById('kpiClients').textContent = clientCount;
+        document.getElementById('kpiRevenue').textContent = '₹' + revenue.toLocaleString('en-IN');
+        document.getElementById('kpiConversion').textContent = convRate + '%';
+
+        const sidebarBadge = document.getElementById('sidebarMsgCount');
+        if (sidebarBadge) sidebarBadge.textContent = newCount;
+
+        // Activity List
+        const activityList = document.getElementById('activityList');
+        if (activityList) {
+          activityList.innerHTML = '';
+          const recents = msgs.slice(0, 5);
+          if (recents.length === 0) {
+            activityList.innerHTML = '<p style="color:var(--text-dim);font-size:0.85rem;">No recent inquiries.</p>';
+          } else {
+            recents.forEach(m => {
+              const d = new Date(m.date);
+              const dateStr = !isNaN(d) ? d.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent';
+              const div = document.createElement('div');
+              div.className = 'activity-item';
+              div.innerHTML = `
+                <div class="activity-info">
+                  <h5>${escapeHtml(m.name || 'Anonymous')} → <span style="color:var(--accent-red);">${escapeHtml(m.service || 'Service')}</span></h5>
+                  <p>${dateStr} &bull; ${escapeHtml(m.email)}</p>
+                </div>
+                <div>
+                  <span class="status-badge ${m.status}">${m.status}</span>
+                </div>
+              `;
+              activityList.appendChild(div);
+            });
+          }
+        }
+      }
+
+      // Quick sample lead button
+      const quickSampleBtn = document.getElementById('quickSampleBtn');
+      if (quickSampleBtn) {
+        quickSampleBtn.addEventListener('click', function () {
+          const names = ['Karan Singhania', 'Priya Joshi', 'Rohan Mehra', 'Deepika Nair'];
+          const services = ['Brand Identity Design', 'Packaging Design', 'UI/UX Design', 'Motion Graphics Design'];
+          const newMsg = {
+            id: 'msg_' + Date.now(),
+            date: new Date().toISOString(),
+            name: names[Math.floor(Math.random() * names.length)],
+            email: 'lead_' + Math.random().toString(36).substring(7) + '@client.com',
+            phone: '+91 98' + Math.floor(10000000 + Math.random() * 90000000),
+            service: services[Math.floor(Math.random() * services.length)],
+            message: 'Hello Niyamathullah, would love to discuss a complete brand identity revamp for our new product line.',
+            status: 'new',
+            adminNotes: '',
+            replied: false,
+            repliedDate: null
+          };
+          const msgs = getMessages();
+          msgs.unshift(newMsg);
+          saveMessages(msgs);
+          renderOverview();
+          renderMessagesTable();
+          alert('Sample lead added!');
+        });
+      }
+
+      // ======================================================================
+      // 2. RENDER MESSAGES TABLE
+      // ======================================================================
+      const messagesTableBody = document.getElementById('messagesTableBody');
+      const msgSearchInput = document.getElementById('msgSearchInput');
+      const msgStatusFilter = document.getElementById('msgStatusFilter');
+      const msgServiceFilter = document.getElementById('msgServiceFilter');
+      const noMessagesState = document.getElementById('noMessagesState');
+
+      function renderMessagesTable() {
+        const msgs = getMessages();
+        const search = (msgSearchInput.value || '').toLowerCase().trim();
+        const status = msgStatusFilter.value;
+        const service = msgServiceFilter.value;
+
+        const filtered = msgs.filter(m => {
+          const matchSearch = !search ||
+            (m.name && m.name.toLowerCase().includes(search)) ||
+            (m.email && m.email.toLowerCase().includes(search)) ||
+            (m.phone && m.phone.toLowerCase().includes(search)) ||
+            (m.message && m.message.toLowerCase().includes(search));
+
+          const matchStatus = status === 'all' || m.status === status;
+          const matchService = service === 'all' || m.service === service;
+
+          return matchSearch && matchStatus && matchService;
+        });
+
+        messagesTableBody.innerHTML = '';
+        if (filtered.length === 0) {
+          noMessagesState.style.display = 'block';
+          return;
+        }
+        noMessagesState.style.display = 'none';
+
+        filtered.forEach(m => {
+          const d = new Date(m.date);
+          const dateStr = !isNaN(d) ? d.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent';
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="color:var(--text-dim);font-size:0.8rem;white-space:nowrap;">${dateStr}</td>
+            <td><strong>${escapeHtml(m.name || 'Anonymous')}</strong></td>
+            <td><a href="mailto:${escapeHtml(m.email)}" style="color:#fff;text-decoration:none;">${escapeHtml(m.email)}</a></td>
+            <td><a href="tel:${escapeHtml(m.phone)}" style="color:var(--text-muted);text-decoration:none;">${escapeHtml(m.phone)}</a></td>
+            <td><span class="service-tag">${escapeHtml(m.service)}</span></td>
+            <td><div class="message-cell-preview view-modal-btn" data-id="${m.id}" title="Click to view full message">${escapeHtml(m.message)}</div></td>
+            <td><span class="status-badge ${m.status}">${m.status}</span></td>
+            <td style="white-space:nowrap;">
+              <button class="btn btn-secondary btn-sm view-modal-btn" data-id="${m.id}">View</button>
+              <button class="btn btn-danger btn-sm delete-msg-btn" data-id="${m.id}">🗑</button>
+            </td>
+          `;
+          messagesTableBody.appendChild(tr);
+        });
+
+        // View modals
+        document.querySelectorAll('.view-modal-btn').forEach(btn => {
+          btn.addEventListener('click', function () {
+            openMessageModal(this.getAttribute('data-id'));
+          });
+        });
+
+        // Delete buttons
+        document.querySelectorAll('.delete-msg-btn').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            if (confirm('Delete this message permanently?')) {
+              const msgs = getMessages().filter(m => m.id !== id);
+              saveMessages(msgs);
+              renderMessagesTable();
+            }
+          });
+        });
+      }
+
+      if (msgSearchInput) msgSearchInput.addEventListener('input', renderMessagesTable);
+      if (msgStatusFilter) msgStatusFilter.addEventListener('change', renderMessagesTable);
+      if (msgServiceFilter) msgServiceFilter.addEventListener('change', renderMessagesTable);
+
+      // ======================================================================
+      // 3. MESSAGE VIEW & REPLY MODAL
+      // ======================================================================
+      const messageModal = document.getElementById('messageModal');
+      const modalClientName = document.getElementById('modalClientName');
+      const modalServiceTag = document.getElementById('modalServiceTag');
+      const modalStatusTag = document.getElementById('modalStatusTag');
+      const modalDate = document.getElementById('modalDate');
+      const modalMessageBody = document.getElementById('modalMessageBody');
+      const modalAdminNotes = document.getElementById('modalAdminNotes');
+      const modalMarkRepliedBtn = document.getElementById('modalMarkRepliedBtn');
+      const modalArchiveBtn = document.getElementById('modalArchiveBtn');
+      const modalMailtoBtn = document.getElementById('modalMailtoBtn');
+      const modalCloseBtn = document.getElementById('modalCloseBtn');
+      let currentModalMsgId = null;
+
+      function openMessageModal(id) {
+        const msgs = getMessages();
+        const m = msgs.find(item => item.id === id);
+        if (!m) return;
+        currentModalMsgId = id;
+
+        modalClientName.textContent = m.name || 'Client Message';
+        modalServiceTag.textContent = m.service || 'Service';
+        modalStatusTag.textContent = m.status;
+        modalStatusTag.className = 'status-badge ' + m.status;
+
+        const d = new Date(m.date);
+        modalDate.textContent = !isNaN(d) ? d.toLocaleString('en-IN') : '';
+        modalMessageBody.textContent = m.message || '(No message body)';
+        modalAdminNotes.value = m.adminNotes || '';
+
+        modalMailtoBtn.href = `mailto:${encodeURIComponent(m.email)}?subject=Re:%20${encodeURIComponent(m.service)}%20Inquiry%20via%20desni&body=Hi%20${encodeURIComponent(m.name)},%0A%0AThank%20you%20for%20reaching%20out%20to%20desni...`;
+
+        messageModal.classList.add('active');
+      }
+
+      if (modalCloseBtn) modalCloseBtn.addEventListener('click', () => messageModal.classList.remove('active'));
+      window.addEventListener('click', (e) => {
+        if (e.target === messageModal) messageModal.classList.remove('active');
+      });
+
+      // Save admin notes on blur
+      if (modalAdminNotes) {
+        modalAdminNotes.addEventListener('blur', function () {
+          if (!currentModalMsgId) return;
+          const msgs = getMessages();
+          const item = msgs.find(m => m.id === currentModalMsgId);
+          if (item) {
+            item.adminNotes = this.value;
+            saveMessages(msgs);
+          }
+        });
+      }
+
+      if (modalMarkRepliedBtn) {
+        modalMarkRepliedBtn.addEventListener('click', function () {
+          if (!currentModalMsgId) return;
+          const msgs = getMessages();
+          const item = msgs.find(m => m.id === currentModalMsgId);
+          if (item) {
+            item.status = 'replied';
+            item.replied = true;
+            item.repliedDate = new Date().toISOString();
+            item.adminNotes = modalAdminNotes.value;
+            saveMessages(msgs);
+            messageModal.classList.remove('active');
+            renderMessagesTable();
+          }
+        });
+      }
+
+      if (modalArchiveBtn) {
+        modalArchiveBtn.addEventListener('click', function () {
+          if (!currentModalMsgId) return;
+          const msgs = getMessages();
+          const item = msgs.find(m => m.id === currentModalMsgId);
+          if (item) {
+            item.status = 'archived';
+            item.adminNotes = modalAdminNotes.value;
+            saveMessages(msgs);
+            messageModal.classList.remove('active');
+            renderMessagesTable();
+          }
+        });
+      }
+
+      // ======================================================================
+      // 4. RENDER CLIENTS DIRECTORY
+      // ======================================================================
+      function renderClientsTable() {
+        const clients = getClients();
+        const msgs = getMessages();
+        const clientsTableBody = document.getElementById('clientsTableBody');
+        const noClientsState = document.getElementById('noClientsState');
+
+        clientsTableBody.innerHTML = '';
+        if (clients.length === 0) {
+          noClientsState.style.display = 'block';
+          return;
+        }
+        noClientsState.style.display = 'none';
+
+        clients.forEach(c => {
+          const sentCount = msgs.filter(m => m.email && m.email.toLowerCase() === (c.email || '').toLowerCase()).length;
+          const d = new Date(c.lastLogin);
+          const dateStr = !isNaN(d) ? d.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent';
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${escapeHtml(c.email)}</strong></td>
+            <td>${c.loginCount || 1}</td>
+            <td>${dateStr}</td>
+            <td>${sentCount} message(s)</td>
+            <td><span class="status-badge replied">${c.status || 'active'}</span></td>
+            <td>
+              <a href="mailto:${escapeHtml(c.email)}" class="btn btn-secondary btn-sm">Email</a>
+              <button class="btn btn-danger btn-sm delete-client-btn" data-email="${escapeHtml(c.email)}">Delete</button>
+            </td>
+          `;
+          clientsTableBody.appendChild(tr);
+        });
+
+        document.querySelectorAll('.delete-client-btn').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const email = this.getAttribute('data-email');
+            if (confirm(`Delete client record for ${email}?`)) {
+              const updated = getClients().filter(c => c.email !== email);
+              localStorage.setItem(CLIENTS_KEY, JSON.stringify(updated));
+              renderClientsTable();
+            }
+          });
+        });
+      }
+
+      // ======================================================================
+      // 5. RENDER PRICING STATS & CHARTS
+      // ======================================================================
+      function renderPricingStats() {
+        const msgs = getMessages();
+        const serviceCounts = {};
+        msgs.forEach(m => {
+          serviceCounts[m.service] = (serviceCounts[m.service] || 0) + 1;
+        });
+
+        const total = msgs.length || 1;
+        const container = document.getElementById('serviceBarsContainer');
+        container.innerHTML = '';
+
+        const allServices = [
+          'Brand Identity Design',
+          'UI/UX Design',
+          'Motion Graphics Design',
+          'Packaging Design',
+          'Publication/Print Design',
+          'Digital Illustration Design',
+          'Product Design',
+          'Brand Strategy'
+        ];
+
+        allServices.forEach(srv => {
+          const count = serviceCounts[srv] || 0;
+          const pct = Math.round((count / total) * 100);
+          const item = document.createElement('div');
+          item.className = 'bar-stat-item';
+          item.innerHTML = `
+            <div class="bar-stat-label"><span>${srv}</span><span>${count} (${pct}%)</span></div>
+            <div class="bar-stat-track"><div class="bar-stat-fill" style="width: ${pct}%;"></div></div>
+          `;
+          container.appendChild(item);
+        });
+
+        // Package breakdown
+        const logoCount = (serviceCounts['Logo Design'] || 0) + (serviceCounts['Digital Illustration Design'] || 0);
+        const identityCount = (serviceCounts['Brand Identity Design'] || 0) + (serviceCounts['Brand Strategy'] || 0);
+        const packagingCount = (serviceCounts['Packaging Design'] || 0) + (serviceCounts['Publication/Print Design'] || 0);
+
+        const pLogo = Math.round((logoCount / total) * 100);
+        const pIdentity = Math.round((identityCount / total) * 100);
+        const pPkg = Math.round((packagingCount / total) * 100);
+
+        document.getElementById('pctLogo').textContent = `${logoCount} (${pLogo}%)`;
+        document.getElementById('fillLogo').style.width = pLogo + '%';
+
+        document.getElementById('pctIdentity').textContent = `${identityCount} (${pIdentity}%)`;
+        document.getElementById('fillIdentity').style.width = pIdentity + '%';
+
+        document.getElementById('pctPackaging').textContent = `${packagingCount} (${pPkg}%)`;
+        document.getElementById('fillPackaging').style.width = pPkg + '%';
+      }
+
+      // ======================================================================
+      // 6. SETTINGS & EXPORTS
+      // ======================================================================
+      function exportCSV() {
+        const msgs = getMessages();
+        if (msgs.length === 0) {
+          alert('No messages to export.');
+          return;
+        }
+
+        let csv = 'ID,Date,Client Name,Email,Phone,Service,Status,Replied,Message,Admin Notes\r\n';
+        msgs.forEach(m => {
+          csv += [
+            m.id,
+            m.date,
+            `"${(m.name || '').replace(/"/g, '""')}"`,
+            `"${(m.email || '').replace(/"/g, '""')}"`,
+            `"${(m.phone || '').replace(/"/g, '""')}"`,
+            `"${(m.service || '').replace(/"/g, '""')}"`,
+            m.status,
+            m.replied ? 'Yes' : 'No',
+            `"${(m.message || '').replace(/"/g, '""')}"`,
+            `"${(m.adminNotes || '').replace(/"/g, '""')}"`
+          ].join(',') + '\r\n';
+        });
+
+        const link = document.createElement('a');
+        link.href = encodeURI('data:text/csv;charset=utf-8,' + csv);
+        link.download = `desni_inquiries_${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      const exportCsvBtn1 = document.getElementById('exportCsvBtn1');
+      if (exportCsvBtn1) exportCsvBtn1.addEventListener('click', exportCSV);
+      const exportCsvBtn2 = document.getElementById('exportCsvBtn2');
+      if (exportCsvBtn2) exportCsvBtn2.addEventListener('click', exportCSV);
+
+      // Backup JSON
+      const backupJsonBtn = document.getElementById('backupJsonBtn');
+      if (backupJsonBtn) {
+        backupJsonBtn.addEventListener('click', function () {
+          const backupData = {
+            messages: getMessages(),
+            clients: getClients(),
+            backupTime: new Date().toISOString()
+          };
+          const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `desni_backup_${new Date().toISOString().slice(0, 10)}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
+      }
+
+      // Reset Demo Data
+      const resetDemoBtn = document.getElementById('resetDemoBtn');
+      if (resetDemoBtn) {
+        resetDemoBtn.addEventListener('click', function () {
+          if (confirm('Reset to initial sample demo data? This will overwrite current entries.')) {
+            localStorage.removeItem(MESSAGES_KEY);
+            localStorage.removeItem(CLIENTS_KEY);
+            seedInitialData();
+            renderOverview();
+            renderMessagesTable();
+            renderClientsTable();
+            renderPricingStats();
+            alert('Sample data reset successfully.');
+          }
+        });
+      }
+
+      // Change Password Form
+      const changePasswordForm = document.getElementById('changePasswordForm');
+      const passAlert = document.getElementById('passAlert');
+      if (changePasswordForm) {
+        changePasswordForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const curr = document.getElementById('currentPassInput').value.trim();
+          const next = document.getElementById('newPassInput').value.trim();
+
+          const activePass = localStorage.getItem(CUSTOM_PASS_KEY) || HARDCODED_PASS;
+          if (curr !== activePass) {
+            passAlert.style.display = 'block';
+            passAlert.style.color = '#f87171';
+            passAlert.textContent = 'Current password is incorrect.';
+            return;
+          }
+
+          if (next.length < 4) {
+            passAlert.style.display = 'block';
+            passAlert.style.color = '#f87171';
+            passAlert.textContent = 'New password must be at least 4 characters.';
+            return;
+          }
+
+          localStorage.setItem(CUSTOM_PASS_KEY, next);
+          passAlert.style.display = 'block';
+          passAlert.style.color = '#34d399';
+          passAlert.textContent = '✓ Password updated successfully!';
+          changePasswordForm.reset();
+          setTimeout(() => passAlert.style.display = 'none', 4000);
+        });
+      }
+
+      // Initial Render
+      renderOverview();
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
