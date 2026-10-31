@@ -446,9 +446,12 @@
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
-      gap: 60px;
+      grid-template-columns: 1fr;
+      gap: 0;
       align-items: center;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
     }
 
     .hero-tag {
@@ -474,12 +477,15 @@
       font-size: 1.15rem;
       color: var(--text-muted);
       margin-bottom: 38px;
-      max-width: 560px;
+      max-width: 660px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .hero-btns {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 18px;
       margin-bottom: 50px;
       flex-wrap: wrap;
@@ -491,6 +497,8 @@
       gap: 20px;
       padding-top: 32px;
       border-top: 1px solid var(--border-glass);
+      max-width: 540px;
+      margin: 0 auto;
     }
 
     .stat-number {
@@ -1118,24 +1126,29 @@
       text-align: center;
     }
 
-    .about-avatar-img {
+    .about-avatar-initials {
       width: 160px;
       height: 160px;
       border-radius: 50%;
       margin: 0 auto 20px auto;
       border: 2.5px solid var(--accent-red);
-      padding: 0; /* CLOSE FIT TO IMAGE */
-      object-fit: cover;
-      object-position: center 12%;
-      background: var(--bg-dark);
-      box-shadow: 0 0 30px var(--accent-glow);
+      background: linear-gradient(135deg, rgba(230,57,70,0.18), rgba(255,42,75,0.08));
+      box-shadow: 0 0 30px var(--accent-glow), inset 0 1px 1px rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 3.2rem;
+      font-weight: 900;
+      color: var(--accent-red);
+      letter-spacing: -0.02em;
       transition: var(--transition-smooth);
-      display: block;
+      user-select: none;
     }
 
-    .about-avatar-img:hover {
+    .about-avatar-initials:hover {
       border-color: var(--accent-crimson);
-      box-shadow: 0 0 45px var(--accent-crimson);
+      box-shadow: 0 0 45px var(--accent-crimson), inset 0 1px 1px rgba(255,255,255,0.15);
       transform: scale(1.05);
     }
 
@@ -1947,7 +1960,7 @@
         </div>
 
         <!-- FREE AUDIT FOR 1 RUPEE BUTTON -->
-        <a href="https://payments.cashfree.com/forms/desni-free-audit" target="_blank" class="btn btn-audit">
+        <a href="#contact" data-audit-checkout class="btn btn-audit">
           Free Audit for ₹1
         </a>
       </div>
@@ -1959,12 +1972,12 @@
     <div class="container hero-grid">
       <div class="hero-content reveal">
         <div class="section-tag hero-tag">Brand Identity & Visual Systems Studio</div>
-        <h1 class="hero-title">Brands people <span class="highlight">remember.</span></h1>
+        <h1 class="hero-title">Make your brand <span class="highlight">unforgettable.</span></h1>
         <p class="hero-desc">Crafting strategic visual identities, UI/UX systems, and typography frameworks by Niyamathullah (desni).</p>
         
         <div class="hero-btns">
           <!-- FREE AUDIT FOR 1 RUPEE BUTTON -->
-          <a href="https://payments.cashfree.com/forms/desni-free-audit" target="_blank" class="btn btn-primary">
+          <a href="#contact" data-audit-checkout class="btn btn-primary">
             Free Audit for ₹1
           </a>
           <a href="#work" class="btn btn-secondary">View Work</a>
@@ -1986,19 +1999,7 @@
         </div>
       </div>
 
-      <!-- NIYAMATHULLAH CREATOR CARD (BORDER FITS SNUGLY TO PHOTO) -->
-      <div class="hero-card liquid-glass reveal">
-        <div class="hero-card-img-wrap">
-          <img src="assets/niyamath-photo.png" alt="Niyamathullah Founder Portrait" onerror="this.src='assets/desni-logo.png';">
-        </div>
-        <div class="hero-card-badge">
-          <div class="badge-info">
-            <h4>Niyamathullah</h4>
-            <p>Founder & Brand Designer (desni)</p>
-          </div>
-          <div class="status-dot" title="Available for Q4 Projects"></div>
-        </div>
-      </div>
+    
     </div>
   </section>
 
@@ -2291,7 +2292,7 @@
           <p>Get a comprehensive 15-minute video audit of your visual identity & website.</p>
         </div>
         <!-- FREE AUDIT FOR 1 RUPEE BUTTON -->
-        <a href="https://payments.cashfree.com/forms/desni-free-audit" target="_blank" class="btn btn-audit">
+        <a href="#contact" data-audit-checkout class="btn btn-audit">
           Free Audit for ₹1
         </a>
       </div>
@@ -2357,7 +2358,7 @@
     <div class="container">
       <div class="about-wrap liquid-glass reveal">
         <div class="about-author">
-          <img src="assets/niyamath-photo.png" alt="Niyamathullah" class="about-avatar-img" onerror="this.src='assets/desni-logo.png';">
+          <div class="about-avatar-initials">N</div>
           <h3 class="about-name">Niyamathullah</h3>
           <p class="about-role">Founder & Brand Designer (desni)</p>
           <div class="about-socials">
@@ -2385,6 +2386,15 @@
         <h3 style="font-size: 2rem; font-weight: 800; margin-bottom: 8px;">Let's craft something unforgettable.</h3>
         <p style="color: var(--text-muted); margin-bottom: 32px; font-size: 0.95rem;">Select your required service and send your project message below.</p>
 
+        <style>          .email-valid-indicator {
+            font-size: 0.78rem;
+            margin-top: 5px;
+            display: none;
+          }
+          .email-valid-indicator.valid { color: #10b981; display: block; }
+          .email-valid-indicator.invalid { color: #f87171; display: block; }
+        </style>
+
         <form id="contactForm">
           <div class="form-row">
             <!-- Field 1: Name -->
@@ -2393,10 +2403,11 @@
               <input type="text" id="nameInput" class="form-input" placeholder="e.g. Rahul Sharma" required>
             </div>
 
-            <!-- Field 2: Email -->
+            <!-- Field 2: Email with validation -->
             <div class="form-group">
               <label for="emailInput" class="form-label">Email Address *</label>
-              <input type="email" id="emailInput" class="form-input" placeholder="e.g. rahul@company.com" required>
+              <input type="email" id="emailInput" class="form-input" placeholder="e.g. rahul@gmail.com" required autocomplete="email">
+              <div id="emailValidIndicator" class="email-valid-indicator"></div>
             </div>
           </div>
 
@@ -2404,7 +2415,7 @@
             <!-- Field 3: Phone -->
             <div class="form-group">
               <label for="phoneInput" class="form-label">Phone Number *</label>
-              <input type="tel" id="phoneInput" class="form-input" placeholder="e.g. +91 98765 43210" required>
+              <input type="tel" id="phoneInput" class="form-input" placeholder="e.g. 9876543210" required maxlength="15" autocomplete="tel">
             </div>
 
             <!-- Field 4: Service Selection Dropdown -->
@@ -2430,6 +2441,11 @@
           <div class="form-group">
             <label for="messageInput" class="form-label">Project Message / Details</label>
             <textarea id="messageInput" class="form-textarea" placeholder="Tell us about your brand goals, timeline, or requirements..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="upiTransactionIdInput" class="form-label">UPI Transaction ID <span style="color:var(--text-dim);font-weight:400;">(optional)</span></label>
+            <input type="text" id="upiTransactionIdInput" class="form-input" placeholder="Enter your UPI transaction/reference ID, if already paid" maxlength="80" autocomplete="off">
           </div>
 
           <button type="submit" id="submitBtn" class="btn btn-primary submit-btn">
@@ -2493,7 +2509,29 @@
      ========================================================================== -->
   <script>
     // DEPLOYED GOOGLE APPS SCRIPT URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxm5fTvOpTjgSob9OSeGeGvc9Bh4DPptsMEr8NiA8vKFTp9-ooMB_xCYN2-rfz_Pan8/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz_fNQ5t3yYr11OzCbhOsnFJvv-HZLI8c3R1dgqvsDFfVOcs9HRaJTon7fkR3v9278g/exec";
+
+    function getScriptJsonp(params) {
+      return new Promise(function (resolve, reject) {
+        const callbackName = "desniJsonp_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+        const script = document.createElement("script");
+        let settled = false;
+        const timeout = setTimeout(function () { finish(new Error("Google Sheets did not respond. Please try again.")); }, 15000);
+        function finish(error, value) {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timeout);
+          delete window[callbackName];
+          script.remove();
+          if (error) reject(error); else resolve(value);
+        }
+        window[callbackName] = function (value) { finish(null, value); };
+        script.onerror = function () { finish(new Error("Could not connect to Google Sheets.")); };
+        const query = new URLSearchParams(Object.assign({}, params, { callback: callbackName, _: String(Date.now()) }));
+        script.src = SCRIPT_URL + "?" + query.toString();
+        document.head.appendChild(script);
+      });
+    }
 
     document.addEventListener("DOMContentLoaded", function () {
       
@@ -2736,6 +2774,9 @@
       const successMsg = document.getElementById("successMsg");
       const errorMsg = document.getElementById("errorMsg");
 
+      /* ------------------------------------------------------------------------
+         5a. FORM SUBMISSION VIA GOOGLE APPS SCRIPT
+         ------------------------------------------------------------------------ */
       if (contactForm) {
         contactForm.addEventListener("submit", function (e) {
           e.preventDefault();
@@ -2745,7 +2786,13 @@
           const phone = document.getElementById("phoneInput").value.trim();
           const service = document.getElementById("serviceInput").value;
           const message = document.getElementById("messageInput").value.trim();
+          const upiTransactionId = document.getElementById("upiTransactionIdInput").value.trim();
 
+          const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+          if (!emailRe.test(email)) {
+            alert("Please enter a valid email address.");
+            return;
+          }
           if (!name || !email || !phone || !service) {
             alert("Please complete all required fields (Name, Email, Phone, Service).");
             return;
@@ -2757,85 +2804,77 @@
           successMsg.style.display = "none";
           errorMsg.style.display = "none";
 
-          // Construct GET URL with query params
-          const targetUrl = SCRIPT_URL + "?" + new URLSearchParams({
-            name: name,
-            email: email,
-            phone: phone,
-            service: service,
-            message: message
-          }).toString();
-
-          // Execute GET request with no-cors mode
-          fetch(targetUrl, {
-            method: "GET",
-            mode: "no-cors"
-          })
-          .then(function () {
-            // Mirror-save lead locally to both legacy key and admin.html 'messages' & 'clients' tables
+          const auditMode = auditCheckoutRequested;
+          // Regular inquiries are saved directly. Audit checkout asks Cashfree for a client-specific payment link.
+          const submission = auditMode
+            ? getScriptJsonp({ action: "createAuditPayment", name, email, phone, service, message, upiTransactionId }).then(function (result) {
+                if (!result || !result.success || !result.shortUrl) throw new Error((result && result.message) || "Could not create the Cashfree payment link.");
+                return result;
+              })
+            : getScriptJsonp({ action: "saveMessage", name, email, phone, service, message, upiTransactionId }).then(function (result) {
+                if (!result || !result.success) throw new Error("Could not save your message to Google Sheets. Please try again.");
+                return null;
+              });
+          submission
+          .then(function (paymentResponse) {
             try {
+              const SERVICE_VALS = {
+                'Brand Identity Design': 15000, 'UI/UX Design': 12000,
+                'Motion Graphics Design': 12000, 'Packaging Design': 10000,
+                'Publication/Print Design': 10000, 'Digital Illustration Design': 8000,
+                'Product Design': 15000, 'Brand Strategy': 15000,
+                'Brand Redesign': 12000, 'Others': 5000
+              };
               const newLead = {
-                id: 'msg_' + Date.now(),
+                id: paymentResponse && paymentResponse.leadId ? paymentResponse.leadId : 'msg_' + Date.now(),
                 date: new Date().toISOString(),
-                name: name,
-                email: email,
-                phone: phone,
-                service: service,
-                message: message,
-                status: 'new',
-                adminNotes: '',
-                replied: false,
-                repliedDate: null
+                name: name, email: email, phone: phone,
+                service: service, message: message, upiTransactionId: upiTransactionId,
+                status: 'new', adminNotes: '',
+                replied: false, repliedDate: null,
+                amountPaid: 0,
+                amountPayable: auditMode ? 1 : (SERVICE_VALS[service] || 10000),
+                category: auditMode ? '₹1 Audit Lead' : 'Website Inquiry',
+                paidStatus: 'No',
+                paymentLinkId: paymentResponse ? paymentResponse.paymentLinkId : ''
               };
 
-              // 1. messages table
               const msgs = JSON.parse(localStorage.getItem("messages") || "[]");
               msgs.unshift(newLead);
               localStorage.setItem("messages", JSON.stringify(msgs));
 
-              // 2. clients table
               const clients = JSON.parse(localStorage.getItem("clients") || "[]");
               const existingClient = clients.find(c => c.email.toLowerCase() === email.toLowerCase());
               if (existingClient) {
                 existingClient.lastLogin = new Date().toISOString();
                 existingClient.loginCount = (existingClient.loginCount || 1) + 1;
               } else {
-                clients.unshift({
-                  email: email,
-                  loginCount: 1,
-                  lastLogin: new Date().toISOString(),
-                  joinDate: new Date().toISOString(),
-                  status: 'active'
-                });
+                clients.unshift({ email: email, loginCount: 1,
+                  lastLogin: new Date().toISOString(), joinDate: new Date().toISOString(), status: 'active' });
               }
               localStorage.setItem("clients", JSON.stringify(clients));
 
-              // 3. legacy compatibility
               const localInquiries = JSON.parse(localStorage.getItem("desni_inquiries") || "[]");
-              localInquiries.unshift({
-                id: newLead.id,
-                timestamp: newLead.date,
-                name: name,
-                email: email,
-                phone: phone,
-                service: service,
-                message: message,
-                status: "New"
-              });
+              localInquiries.unshift({ id: newLead.id, timestamp: newLead.date,
+                name: name, email: email, phone: phone, service: service, message: message, status: "New" });
               localStorage.setItem("desni_inquiries", JSON.stringify(localInquiries));
-            } catch (err) {
-              console.warn("Local lead save warning:", err);
-            }
+            } catch (err) { console.warn("Local lead save warning:", err); }
 
             submitBtn.disabled = false;
             submitBtn.textContent = "Send Message";
+            successMsg.textContent = auditMode ? "Your secure ₹1 payment link is ready. Opening Cashfree…" : "Your message has been sent successfully.";
             successMsg.style.display = "block";
+            if (auditMode && paymentResponse && paymentResponse.shortUrl) {
+              window.location.assign(paymentResponse.shortUrl);
+              return;
+            }
             contactForm.reset();
           })
           .catch(function (err) {
             console.error("Submission error:", err);
             submitBtn.disabled = false;
-            submitBtn.textContent = "Send Message";
+            submitBtn.textContent = auditCheckoutRequested ? "Create ₹1 Audit Payment Link" : "Send Message";
+            errorMsg.textContent = "✕ " + (err && err.message ? err.message : "Something went wrong. Please try again.");
             errorMsg.style.display = "block";
           });
         });
@@ -2946,50 +2985,7 @@
 
       // Seed initial demo data if localStorage is empty
       function ensureSeedData() {
-        if (!localStorage.getItem(MESSAGES_KEY)) {
-          const initialMessages = [
-            {
-              id: 'msg_001',
-              date: new Date(Date.now() - 3600000 * 4).toISOString(),
-              name: 'Aakash Varma',
-              email: 'aakash@nexusbrand.io',
-              phone: '+91 98450 11223',
-              service: 'Brand Identity Design',
-              message: 'We are a fintech startup preparing for our Q1 launch. Need a comprehensive visual identity, typography framework, and brand guidelines.',
-              status: 'new',
-              adminNotes: 'Reviewed portfolio match. Great potential lead.',
-              replied: false,
-              repliedDate: null
-            },
-            {
-              id: 'msg_002',
-              date: new Date(Date.now() - 3600000 * 24).toISOString(),
-              name: 'Ritika Sen',
-              email: 'ritika@zenithbrew.com',
-              phone: '+91 91234 56789',
-              service: 'Packaging Design',
-              message: 'Launching a premium craft beverage line. Need 4 flavor label die-lines, secondary packaging, and 3D renders.',
-              status: 'replied',
-              adminNotes: 'Sent quote and Behance case study on Everchill.',
-              replied: true,
-              repliedDate: new Date(Date.now() - 3600000 * 12).toISOString()
-            },
-            {
-              id: 'msg_003',
-              date: new Date(Date.now() - 3600000 * 72).toISOString(),
-              name: 'Siddharth Rao',
-              email: 'sid@novasystems.tech',
-              phone: '+91 99887 76655',
-              service: 'UI/UX Design',
-              message: 'Redesigning our cloud analytics web portal and developer documentation interface.',
-              status: 'new',
-              adminNotes: '',
-              replied: false,
-              repliedDate: null
-            }
-          ];
-          localStorage.setItem(MESSAGES_KEY, JSON.stringify(initialMessages));
-        }
+        if (!localStorage.getItem(MESSAGES_KEY)) localStorage.setItem(MESSAGES_KEY, "[]");
 
         if (!localStorage.getItem(CLIENTS_KEY)) {
           const initialClients = [
