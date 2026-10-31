@@ -2509,7 +2509,7 @@
      ========================================================================== -->
   <script>
     // DEPLOYED GOOGLE APPS SCRIPT URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz_fNQ5t3yYr11OzCbhOsnFJvv-HZLI8c3R1dgqvsDFfVOcs9HRaJTon7fkR3v9278g/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxxRHGlS5whd3X1sDTxcE-h3vMsLZtXDdBg9nZTMpaiVFrZXsVeh2_9qeLte6j3Ol-/exec";
 
     function getScriptJsonp(params) {
       return new Promise(function (resolve, reject) {
@@ -2773,6 +2773,20 @@
       const submitBtn = document.getElementById("submitBtn");
       const successMsg = document.getElementById("successMsg");
       const errorMsg = document.getElementById("errorMsg");
+      let auditCheckoutRequested = false;
+
+      document.querySelectorAll("[data-audit-checkout]").forEach(function (link) {
+        link.addEventListener("click", function () {
+          auditCheckoutRequested = true;
+          if (submitBtn) submitBtn.textContent = "Create ₹1 Audit Payment Link";
+        });
+      });
+      document.querySelectorAll('a[href="#contact"]:not([data-audit-checkout])').forEach(function (link) {
+        link.addEventListener("click", function () {
+          auditCheckoutRequested = false;
+          if (submitBtn) submitBtn.textContent = "Send Message";
+        });
+      });
 
       /* ------------------------------------------------------------------------
          5a. FORM SUBMISSION VIA GOOGLE APPS SCRIPT
@@ -2804,7 +2818,7 @@
           successMsg.style.display = "none";
           errorMsg.style.display = "none";
 
-          const auditMode = auditCheckoutRequested;
+          const auditMode = !!auditCheckoutRequested;
           // Regular inquiries are saved directly. Audit checkout asks Cashfree for a client-specific payment link.
           const submission = auditMode
             ? getScriptJsonp({ action: "createAuditPayment", name, email, phone, service, message, upiTransactionId }).then(function (result) {
@@ -2869,11 +2883,12 @@
               return;
             }
             contactForm.reset();
+            auditCheckoutRequested = false;
           })
           .catch(function (err) {
             console.error("Submission error:", err);
             submitBtn.disabled = false;
-            submitBtn.textContent = auditCheckoutRequested ? "Create ₹1 Audit Payment Link" : "Send Message";
+            submitBtn.textContent = auditMode ? "Create ₹1 Audit Payment Link" : "Send Message";
             errorMsg.textContent = "✕ " + (err && err.message ? err.message : "Something went wrong. Please try again.");
             errorMsg.style.display = "block";
           });
