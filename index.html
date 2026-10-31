@@ -1960,7 +1960,7 @@
         </div>
 
         <!-- FREE AUDIT FOR 1 RUPEE BUTTON -->
-        <a href="#contact" href="https://payments.cashfree.com/forms/desni-free-audit" class="btn btn-audit">
+        <a href="https://payments.cashfree.com/forms/desni-free-audit" class="btn btn-audit">
           Free Audit for ₹1
         </a>
       </div>
@@ -1977,7 +1977,7 @@
         
         <div class="hero-btns">
           <!-- FREE AUDIT FOR 1 RUPEE BUTTON -->
-          <a href="#contact" href="https://payments.cashfree.com/forms/desni-free-audit" class="btn btn-primary">
+          <a href="https://payments.cashfree.com/forms/desni-free-audit" class="btn btn-primary">
             Free Audit for ₹1
           </a>
           <a href="#work" class="btn btn-secondary">View Work</a>
@@ -2292,7 +2292,7 @@
           <p>Get a comprehensive 15-minute video audit of your visual identity & website.</p>
         </div>
         <!-- FREE AUDIT FOR 1 RUPEE BUTTON -->
-        <a href="#contact" href="https://payments.cashfree.com/forms/desni-free-audit" class="btn btn-audit">
+        <a href="https://payments.cashfree.com/forms/desni-free-audit" class="btn btn-audit">
           Free Audit for ₹1
         </a>
       </div>
@@ -2448,7 +2448,7 @@
             <input type="text" id="upiTransactionIdInput" class="form-input" placeholder="Enter your UPI transaction/reference ID, if already paid" maxlength="80" autocomplete="off">
           </div>
 
-          <button type="submit" id="submitBtn" class="btn btn-primary submit-btn">
+          <a href="https://payments.cashfree.com/forms/desni-free-audit" class="btn btn-primary submit-btn" style="display:flex;justify-content:center;margin-bottom:12px;">Pay ₹1 for Website Audit</a><button type="submit" id="submitBtn" class="btn btn-secondary submit-btn">
             Send Message
           </button>
 
@@ -2775,13 +2775,13 @@
       const errorMsg = document.getElementById("errorMsg");
       let auditCheckoutRequested = false;
 
-      document.querySelectorAll("[href="https://payments.cashfree.com/forms/desni-free-audit"]").forEach(function (link) {
+      document.querySelectorAll("[data-audit-checkout]").forEach(function (link) {
         link.addEventListener("click", function () {
           auditCheckoutRequested = true;
           if (submitBtn) submitBtn.textContent = "Create ₹1 Audit Payment Link";
         });
       });
-      document.querySelectorAll('a[href="#contact"]:not([href="https://payments.cashfree.com/forms/desni-free-audit"])').forEach(function (link) {
+      document.querySelectorAll('a[href="#contact"]:not([data-audit-checkout])').forEach(function (link) {
         link.addEventListener("click", function () {
           auditCheckoutRequested = false;
           if (submitBtn) submitBtn.textContent = "Send Message";
